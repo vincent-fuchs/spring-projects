@@ -5,16 +5,16 @@ import com.github.vincent_fuchs.spring_projects.excelReader.ExcelColumn;
 
 public class Customer {
 
-	@ExcelColumn(column=0, excelColumnName = "Id", valueParser=ExcelCellDataParser.LONG)
+	@ExcelColumn(column=0, valueParser=ExcelCellDataParser.LONG)
 	Long id;
 	
-	@ExcelColumn(column=1, excelColumnName = "first name")
+	@ExcelColumn(column=1)
 	String firstName;
 	
-	@ExcelColumn(column=2, excelColumnName = "last name")
+	@ExcelColumn(column=2)
 	String lastName;
 	
-	@ExcelColumn(column=3, excelColumnName = "age", valueParser=ExcelCellDataParser.INT)
+	@ExcelColumn(column=3, valueParser=ExcelCellDataParser.INT)
 	int age;
 	
 	public Long getId() {

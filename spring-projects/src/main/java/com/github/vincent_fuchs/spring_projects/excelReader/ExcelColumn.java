@@ -11,8 +11,6 @@ public @interface ExcelColumn {
 
 	int column();
 
-	String excelColumnName();
-
 	ExcelCellDataParser valueParser() default ExcelCellDataParser.STRING;
 
 }
