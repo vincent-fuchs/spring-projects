@@ -17,11 +17,13 @@ public class ExcelReaderTest {
 	@Before
 	public void initTest(){
 		excelReader=new ExcelReader();
+		excelReader.setInputFile(SIMPLE_INPUT_FILE);
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void shouldThrowException_ifNotProperlyConfigured_notExistingInputFile() throws IOException {
-			
+		
+		excelReader.setInputFile(null);		
 		excelReader.init();		
 	}
 	
@@ -35,42 +37,44 @@ public class ExcelReaderTest {
 	
 	@Test(expected=IllegalStateException.class)
 	public void shouldThrowException_ifNoWorksheetConfig() throws IOException {
-						
-		excelReader.setInputFile(SIMPLE_INPUT_FILE);
+								
 		excelReader.init();		
 	
 	}
 	
 	@Test
 	public void shouldInitOk_ifWorksheetConfigDone() throws IOException {
-						
-		excelReader.setInputFile(SIMPLE_INPUT_FILE);
+				
+		List<WorksheetConfig>  worksheetsConfig=buildWorksheetConfigsWithNames("customers");		
 		
-		WorksheetConfig worksheetConfig=new WorksheetConfig("customers");
-		
-		List<WorksheetConfig> config=new ArrayList<WorksheetConfig>();
-		config.add(worksheetConfig);
-		excelReader.setWorsheetConfigs(config);		
+		excelReader.setWorsheetConfigs(worksheetsConfig);
 		
 		excelReader.init();		
 	}
+
+
 	
 	@Test(expected=ExcelReaderConfigException.class)
 	public void shouldThrowException_ifConfiguredWorksheetDoesntExist() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException{
-						
-		excelReader.setInputFile(SIMPLE_INPUT_FILE);
-		
-		WorksheetConfig worksheetConfig=new WorksheetConfig("someDummyNonExistingWorksheet");
-		
-		List<WorksheetConfig> config=new ArrayList<WorksheetConfig>();
-		config.add(worksheetConfig);
-		excelReader.setWorsheetConfigs(config);		
+					
+		List<WorksheetConfig>  worksheetsConfig=buildWorksheetConfigsWithNames("someDummyNonExistingWorksheet");		
+				
+		excelReader.setWorsheetConfigs(worksheetsConfig);		
 		
 		excelReader.init();		
 		excelReader.readWorksheets();
 	}
 	
-	
+	private List<WorksheetConfig>  buildWorksheetConfigsWithNames(String... worksheetNames) {
+		
+		List<WorksheetConfig> config=new ArrayList<WorksheetConfig>();
+		
+		for(String worksheetName : worksheetNames){
+			config.add(new WorksheetConfig(worksheetName));
+		}
+		
+		return config;
+	}
 	
 	
 
