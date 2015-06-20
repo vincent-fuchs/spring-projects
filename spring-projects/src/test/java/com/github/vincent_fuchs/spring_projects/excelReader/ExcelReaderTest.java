@@ -1,14 +1,19 @@
 package com.github.vincent_fuchs.spring_projects.excelReader;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.github.vincent_fuchs.spring_projects.domain.Customer;
 
 public class ExcelReaderTest {
 	
@@ -71,6 +76,22 @@ public class ExcelReaderTest {
 		
 		excelReader.init();		
 		excelReader.readWorksheets();
+	}
+	
+	@Test
+	public void shouldHaveAnEntryInResultWithSameNameAsWorksheetName() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException{
+
+		List<WorksheetConfig> config=new ArrayList<WorksheetConfig>();
+		
+		config.add(new WorksheetConfig("customers",Customer.class));
+				
+		excelReader.setWorsheetConfigs(config);		
+		
+		excelReader.init();		
+		Map<String, List<Object>> result=excelReader.readWorksheets();
+		
+		assertThat(result).isNotEmpty();
+		assertThat(result).containsKey("customers");
 	}
 	
 	

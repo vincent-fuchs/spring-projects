@@ -8,10 +8,6 @@ public class WorksheetConfig {
 	
 	private String firstCellWithData="A2";
 	
-	public String getFirstCellWithData() {
-		return firstCellWithData;
-	}
-
 	public void setFirstCellWithData(String firstCellWithData) {
 		this.firstCellWithData = firstCellWithData;
 	}
