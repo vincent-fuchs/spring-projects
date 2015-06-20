@@ -12,6 +12,7 @@ import org.springframework.batch.item.UnexpectedInputException;
 
 public class ExcelReaderTest {
 	
+	private static final String SIMPLE_INPUT_FILE = "/com/github/vincent_fuchs/spring_projects/excelReader/simpleInputFile.xlsx";
 	ExcelReader excelReader;
 	
 	@Before
@@ -36,7 +37,7 @@ public class ExcelReaderTest {
 	@Test(expected=IllegalStateException.class)
 	public void shouldThrowException_ifNoWorksheetConfig() throws UnexpectedInputException, ParseException, NonTransientResourceException, Exception {
 						
-		excelReader.setInputFile("/com/github/vincent_fuchs/spring_projects/excelReader/simpleInputFile.xlsx");
+		excelReader.setInputFile(SIMPLE_INPUT_FILE);
 		excelReader.init();		
 	
 	}
@@ -44,17 +45,15 @@ public class ExcelReaderTest {
 	@Test
 	public void shouldInitOk_ifWorksheetConfigDone() throws UnexpectedInputException, ParseException, NonTransientResourceException, Exception {
 						
-		excelReader.setInputFile("/com/github/vincent_fuchs/spring_projects/excelReader/simpleInputFile.xlsx");
+		excelReader.setInputFile(SIMPLE_INPUT_FILE);
 		
 		WorksheetConfig worksheetConfig=new WorksheetConfig("customers");
 		
 		List<WorksheetConfig> config=new ArrayList<WorksheetConfig>();
 		config.add(worksheetConfig);
-		excelReader.setWorsheetConfigs(config);
-		
+		excelReader.setWorsheetConfigs(config);		
 		
 		excelReader.init();		
-	
 	}
 	
 	
