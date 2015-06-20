@@ -1,10 +1,10 @@
 package com.github.vincent_fuchs.spring_projects.excelReader;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
@@ -17,6 +17,13 @@ import com.github.vincent_fuchs.spring_projects.domain.Customer;
 public class ExcelReader implements ItemReader<Customer> {
 
 	private String inputFile;
+	
+	private List<WorksheetConfig> worsheetConfigs=new ArrayList<WorksheetConfig>();
+	
+
+	public void setWorsheetConfigs(List<WorksheetConfig> worsheetConfigs) {
+		this.worsheetConfigs = worsheetConfigs;
+	}
 
 	@Override
 	public Customer read() throws Exception, UnexpectedInputException, ParseException,
@@ -35,6 +42,10 @@ public class ExcelReader implements ItemReader<Customer> {
 		
 		if(fileAsUrl==null){
 			throw new IOException("file doesn't exist : "+inputFile);
+		}
+		
+		if(worsheetConfigs.isEmpty()){
+			throw new IllegalStateException("At least one worksheet config is required to read the excel file");
 		}
 				
 		FileInputStream excelFileAsStream = new FileInputStream(fileAsUrl.getFile());
