@@ -63,7 +63,7 @@ public class ExcelReaderTest {
 	
 	
 	@Test(expected=ExcelReaderConfigException.class)
-	public void shouldThrowException_ifConfiguredWorksheetDoesntExist() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException, InstantiationException, IllegalAccessException{
+	public void shouldThrowException_ifConfiguredWorksheetDoesntExist() throws Exception{
 						
 		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames("someDummyNonExistingWorksheet"));		
 		
@@ -73,7 +73,7 @@ public class ExcelReaderTest {
 		
 	
 	@Test(expected=ExcelReaderConfigException.class)
-	public void shouldThrowException_ifConfiguredWorksheetHasNoParser() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException, InstantiationException, IllegalAccessException{
+	public void shouldThrowException_ifConfiguredWorksheetHasNoParser() throws Exception{
 				
 		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames(CUSTOMERS_WORKSHEET_NAME));		
 		
@@ -82,7 +82,7 @@ public class ExcelReaderTest {
 	}
 	
 	@Test
-	public void shouldHaveAnEntryInResultWithSameNameAsWorksheetName() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException, InstantiationException, IllegalAccessException{
+	public void shouldHaveAnEntryInResultWithSameNameAsWorksheetName() throws Exception{
 	
 		configureAndInitForSimpleInputFile();	
 		
@@ -94,7 +94,7 @@ public class ExcelReaderTest {
 
 	
 	@Test
-	public void shouldHaveResultOfExpectedClassAfterParsing() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException, InstantiationException, IllegalAccessException{
+	public void shouldHaveResultOfExpectedClassAfterParsing() throws Exception{
 
 		configureAndInitForSimpleInputFile();		
 		Map<String, List<Object>> result=excelReader.readWorksheets();
@@ -105,7 +105,22 @@ public class ExcelReaderTest {
 		assertThat(actualParsedCustomer.get(0)).isInstanceOf(Customer.class);
 	}
 	
-	
+
+	@Test
+	public void shouldHaveBeanWithExpectedValuesAfterParsing() throws Exception{
+
+		configureAndInitForSimpleInputFile();		
+		Map<String, List<Object>> result=excelReader.readWorksheets();
+		
+		List<Object> actualParsedCustomer=result.get(CUSTOMERS_WORKSHEET_NAME);
+		
+		Customer customer = (Customer)actualParsedCustomer.get(0);
+		
+		assertThat(customer.getId()).isEqualTo(1);
+		assertThat(customer.getFirstName()).isEqualTo("Vincent");
+		assertThat(customer.getLastName()).isEqualTo("FUCHS");
+		assertThat(customer.getAge()).isEqualTo(33);
+	}
 	
 	private List<WorksheetConfig>  buildWorksheetConfigsWithNames(String... worksheetNames) {
 		
