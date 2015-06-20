@@ -1,5 +1,11 @@
 package com.github.vincent_fuchs.spring_projects.excelReader;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
@@ -19,12 +25,25 @@ public class ExcelReader implements ItemReader<Customer> {
 		return null;
 	}
 
-	public void init() {
+	public void init() throws IOException  {
 		
 		if(StringUtils.isEmpty(inputFile)){
 			throw new IllegalStateException("reader should have a valid inputFile configured");
 		}
 		
+		URL fileAsUrl=this.getClass().getResource(inputFile);
+		
+		if(fileAsUrl==null){
+			throw new IOException("file doesn't exist : "+inputFile);
+		}
+				
+		FileInputStream excelFileAsStream = new FileInputStream(fileAsUrl.getFile());
+		
+		
+	}
+
+	public void setInputFile(String inputFile) {
+		this.inputFile=inputFile;
 		
 	}
 
