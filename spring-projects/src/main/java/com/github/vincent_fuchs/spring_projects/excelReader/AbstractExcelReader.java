@@ -15,15 +15,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.ParseException;
-import org.springframework.batch.item.UnexpectedInputException;
 
-import com.github.vincent_fuchs.spring_projects.domain.Address;
-import com.github.vincent_fuchs.spring_projects.domain.Customer;
-
-public class ExcelReader implements ItemReader<Customer> {
+public abstract class AbstractExcelReader {
 
 	private String inputFile;
 
@@ -33,16 +26,20 @@ public class ExcelReader implements ItemReader<Customer> {
 
 	protected Map<String, List<Object>> parsedResultFromWorksheets;
 
+	
+	/**
+	 * Subclass have to implement this method, which will hold their business logic. 
+	 * individual worksheets content is stored in {@link #parsedResultFromWorksheets} Worksheets map, where keys are the worksheets' names
+	 * @return
+	 */
+	public abstract List<Object> mergeWorksheets() ;
+	
+	
+	
 	public void setWorsheetConfigs(List<WorksheetConfig> worsheetConfigs) {
 		this.worsheetConfigs = worsheetConfigs;
 	}
 
-	@Override
-	public Customer read() throws Exception, UnexpectedInputException,
-			ParseException, NonTransientResourceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public void init() throws IOException {
 
@@ -142,36 +139,7 @@ public class ExcelReader implements ItemReader<Customer> {
 		return StringUtils.join(existingSheetNames, ",");
 	}
 
-	public List<Object> mergeWorksheets() {
-		
-		List<Object> mergedResult=new ArrayList<Object>();
-		
-		List<Object> parsedCustomers=parsedResultFromWorksheets.get("customers");
-		
-		List<Object> parsedAddresses=parsedResultFromWorksheets.get("addresses");
-
-		for(Object customerAsObj : parsedCustomers){
-			
-			Customer customer=(Customer)customerAsObj;
-			
-			for(Object addressAsObj : parsedAddresses){
-				
-				Address address = (Address)addressAsObj;
-				
-				if(address.getCustomerId()==customer.getId()){
-					customer.setAddress(address);
-					break;
-				}
-			}
-			
-			
-			mergedResult.add(customer);
-			
-		}
-		
-		
-		return mergedResult;
-		
-	}
+	
+	
 
 }

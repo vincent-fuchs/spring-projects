@@ -7,27 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.vincent_fuchs.spring_projects.domain.Address;
 import com.github.vincent_fuchs.spring_projects.domain.Customer;
 
-public class ExcelReaderTest {
+public class AbstractExcelReaderTest {
 	
 	private static final String CUSTOMERS_WORKSHEET_NAME = "customers";
 	private static final String ADDRESSES_WORKSHEET_NAME = "addresses";
 	private static final String SIMPLE_INPUT_FILE = "/com/github/vincent_fuchs/spring_projects/excelReader/simpleInputFile.xlsx";
-	ExcelReader excelReader;
+	AbstractExcelReader excelReader;
 	
 	List<WorksheetConfig> config;
 	
 	@Before
 	public void initTest(){
-		excelReader=new ExcelReader();
+		excelReader=new CustomerExcelReader();
 		excelReader.setInputFile(SIMPLE_INPUT_FILE);
 		
 		config=new ArrayList<WorksheetConfig>();
