@@ -2,20 +2,15 @@ package com.github.vincent_fuchs.spring_projects.excelReader;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.hssf.record.aggregates.WorksheetProtectionBlock;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -24,7 +19,6 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
-import org.apache.commons.lang3.StringUtils;
 
 import com.github.vincent_fuchs.spring_projects.domain.Customer;
 
@@ -83,6 +77,8 @@ public class ExcelReader implements ItemReader<Customer> {
 
 		Workbook workbook = WorkbookFactory.create(excelFileAsStream);
 
+		ExcelRowParser excelRowParser=new ExcelRowParser();
+		
 		for (WorksheetConfig worksheetConfig : worsheetConfigs) {
 
 			Sheet sheet = validateAndReturnSheet(workbook, worksheetConfig);
@@ -92,7 +88,7 @@ public class ExcelReader implements ItemReader<Customer> {
 
 				Row rowToParse = sheet.getRow(i);
 
-				Object parsedRow = instanciateAndPopulateWithValuesFromRow(worksheetConfig.getRowClass(), rowToParse);
+				Object parsedRow = excelRowParser.instanciateAndPopulateWithValuesFromRow(worksheetConfig.getRowClass(), rowToParse);
 
 				parsedResult.add(parsedRow);
 
@@ -105,38 +101,7 @@ public class ExcelReader implements ItemReader<Customer> {
 		return parsedResultFromWorksheets;
 
 	}
-
-	private static void setField(Object object, String fieldName, Object value)
-			throws SecurityException, NoSuchFieldException,
-			IllegalArgumentException, IllegalAccessException {
-		Field field = object.getClass().getDeclaredField(fieldName);
-		field.setAccessible(true);
-		field.set(object, value);
-		field.setAccessible(false);
-	}
-
-	private Object instanciateAndPopulateWithValuesFromRow(Class targetClass,Row rowToParse) throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException, IllegalArgumentException {
-		
-		Object targetBean=targetClass.newInstance();
-		
-		for(Field field : targetClass.getDeclaredFields())
-		{
-		     
-		     if (field.isAnnotationPresent(ExcelColumn.class))
-		     {
-		    	 ExcelColumn excelColumn=field.getAnnotation(ExcelColumn.class);
-		    	 
-		    	 Cell cell=rowToParse.getCell(excelColumn.column());
-		    	 ExcelCellDataParser parser=excelColumn.valueParser();
-		    	 
-		    	setField(targetBean,field.getName(),parser.getValue(cell));
-		   
-		     }
-		}
-		
-		
-		return targetBean;
-	}
+	
 
 	private Sheet validateAndReturnSheet(Workbook workbook,	WorksheetConfig worksheetConfig) {
 
