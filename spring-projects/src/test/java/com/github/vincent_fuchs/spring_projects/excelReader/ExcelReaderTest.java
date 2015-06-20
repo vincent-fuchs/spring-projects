@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ExcelReaderTest {
@@ -44,26 +45,36 @@ public class ExcelReaderTest {
 	
 	@Test
 	public void shouldInitOk_ifWorksheetConfigDone() throws IOException {
-				
-		List<WorksheetConfig>  worksheetsConfig=buildWorksheetConfigsWithNames("customers");		
-		
-		excelReader.setWorsheetConfigs(worksheetsConfig);
+					
+		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames("customers"));
 		
 		excelReader.init();		
 	}
-
-
+	
 	
 	@Test(expected=ExcelReaderConfigException.class)
 	public void shouldThrowException_ifConfiguredWorksheetDoesntExist() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException{
+						
+		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames("someDummyNonExistingWorksheet"));		
+		
+		excelReader.init();		
+		excelReader.readWorksheets();
+	}
+		
+	
+	@Test(expected=ExcelReaderConfigException.class)
+	public void shouldThrowException_ifConfiguredWorksheetHasNoParser() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException{
 					
-		List<WorksheetConfig>  worksheetsConfig=buildWorksheetConfigsWithNames("someDummyNonExistingWorksheet");		
+		List<WorksheetConfig>  worksheetsConfig=buildWorksheetConfigsWithNames("customers");		
 				
 		excelReader.setWorsheetConfigs(worksheetsConfig);		
 		
 		excelReader.init();		
 		excelReader.readWorksheets();
 	}
+	
+	
+	
 	
 	private List<WorksheetConfig>  buildWorksheetConfigsWithNames(String... worksheetNames) {
 		

@@ -16,7 +16,8 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
-import org.springframework.util.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.github.vincent_fuchs.spring_projects.domain.Customer;
 
@@ -74,7 +75,13 @@ public class ExcelReader implements ItemReader<Customer> {
 			String configuredSheetName=worksheetConfig.getName();
 			
 			if(workbook.getSheet(configuredSheetName)==null){
-				throw new ExcelReaderConfigException("configured worksheet with name "+configuredSheetName+" not found in input file "+inputFile);
+											
+				throw new ExcelReaderConfigException("configured worksheet with name "+configuredSheetName+" not found in input file "+inputFile+
+						". existing sheets : "+joinExistingWorksheetsNames(workbook));
+			}
+			
+			if(worksheetConfig.getWorksheetParser()==null){
+				throw new ExcelReaderConfigException("configured worksheet with name "+configuredSheetName+" should have a configured parser but it's null");
 			}
 			
 		}
@@ -84,6 +91,17 @@ public class ExcelReader implements ItemReader<Customer> {
 		
 		
 		
+	}
+
+	private String joinExistingWorksheetsNames(Workbook workbook) {
+		List<String> existingSheetNames=new ArrayList<String>();
+		int i=0;
+		
+		while(i<workbook.getNumberOfSheets()){
+			existingSheetNames.add(workbook.getSheetAt(i).getSheetName());
+			i++;
+		}
+		return StringUtils.join(existingSheetNames,",");
 	}
 
 }
