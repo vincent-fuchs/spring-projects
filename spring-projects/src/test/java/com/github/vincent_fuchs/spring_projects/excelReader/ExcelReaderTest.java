@@ -13,11 +13,13 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.github.vincent_fuchs.spring_projects.domain.Address;
 import com.github.vincent_fuchs.spring_projects.domain.Customer;
 
 public class ExcelReaderTest {
 	
 	private static final String CUSTOMERS_WORKSHEET_NAME = "customers";
+	private static final String ADDRESSES_WORKSHEET_NAME = "addresses";
 	private static final String SIMPLE_INPUT_FILE = "/com/github/vincent_fuchs/spring_projects/excelReader/simpleInputFile.xlsx";
 	ExcelReader excelReader;
 	
@@ -120,6 +122,39 @@ public class ExcelReaderTest {
 		assertThat(customer.getFirstName()).isEqualTo("Vincent");
 		assertThat(customer.getLastName()).isEqualTo("FUCHS");
 		assertThat(customer.getAge()).isEqualTo(33);
+	}
+	
+	@Test
+	public void shouldParseCorrectlyWhenSeveralWorksheets() throws Exception{
+
+		config.add(new WorksheetConfig(CUSTOMERS_WORKSHEET_NAME,Customer.class));
+		config.add(new WorksheetConfig(ADDRESSES_WORKSHEET_NAME,Address.class));
+		
+		excelReader.setWorsheetConfigs(config);		
+		
+		excelReader.init();
+				
+		
+		Map<String, List<Object>> result=excelReader.readWorksheets();
+				
+		
+		List<Object> actualParsedCustomer=result.get(CUSTOMERS_WORKSHEET_NAME);
+		
+		Customer customer = (Customer)actualParsedCustomer.get(0);
+		
+		assertThat(customer.getId()).isEqualTo(1);
+		assertThat(customer.getFirstName()).isEqualTo("Vincent");
+		assertThat(customer.getLastName()).isEqualTo("FUCHS");
+		assertThat(customer.getAge()).isEqualTo(33);
+		
+		List<Object> actualParsedAddress=result.get(ADDRESSES_WORKSHEET_NAME);
+		
+		Address address = (Address)actualParsedAddress.get(0);
+		
+		assertThat(address.getCustomerId()).isEqualTo(1);
+		assertThat(address.getNumber()).isEqualTo(42);
+		assertThat(address.getStreet()).isEqualTo("expectedStreet");
+		assertThat(address.getCountry()).isEqualTo("expectedCountry");
 	}
 	
 	private List<WorksheetConfig>  buildWorksheetConfigsWithNames(String... worksheetNames) {
