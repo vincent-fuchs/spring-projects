@@ -20,6 +20,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
+import com.github.vincent_fuchs.spring_projects.domain.Address;
 import com.github.vincent_fuchs.spring_projects.domain.Customer;
 
 public class ExcelReader implements ItemReader<Customer> {
@@ -29,6 +30,8 @@ public class ExcelReader implements ItemReader<Customer> {
 	private List<WorksheetConfig> worsheetConfigs = new ArrayList<WorksheetConfig>();
 
 	private FileInputStream excelFileAsStream;
+
+	protected Map<String, List<Object>> parsedResultFromWorksheets;
 
 	public void setWorsheetConfigs(List<WorksheetConfig> worsheetConfigs) {
 		this.worsheetConfigs = worsheetConfigs;
@@ -73,7 +76,7 @@ public class ExcelReader implements ItemReader<Customer> {
 			InvalidFormatException, InstantiationException,
 			IllegalAccessException, SecurityException, NoSuchFieldException, IllegalArgumentException {
 
-		Map<String, List<Object>> parsedResultFromWorksheets = new HashMap<String, List<Object>>();
+		parsedResultFromWorksheets = new HashMap<String, List<Object>>();
 
 		Workbook workbook = WorkbookFactory.create(excelFileAsStream);
 
@@ -137,6 +140,38 @@ public class ExcelReader implements ItemReader<Customer> {
 			i++;
 		}
 		return StringUtils.join(existingSheetNames, ",");
+	}
+
+	public List<Object> mergeWorksheets() {
+		
+		List<Object> mergedResult=new ArrayList<Object>();
+		
+		List<Object> parsedCustomers=parsedResultFromWorksheets.get("customers");
+		
+		List<Object> parsedAddresses=parsedResultFromWorksheets.get("addresses");
+
+		for(Object customerAsObj : parsedCustomers){
+			
+			Customer customer=(Customer)customerAsObj;
+			
+			for(Object addressAsObj : parsedAddresses){
+				
+				Address address = (Address)addressAsObj;
+				
+				if(address.getCustomerId()==customer.getId()){
+					customer.setAddress(address);
+					break;
+				}
+			}
+			
+			
+			mergedResult.add(customer);
+			
+		}
+		
+		
+		return mergedResult;
+		
 	}
 
 }

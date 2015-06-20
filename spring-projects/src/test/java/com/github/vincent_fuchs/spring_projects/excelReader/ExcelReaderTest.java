@@ -104,6 +104,7 @@ public class ExcelReaderTest {
 		List<Object> actualParsedCustomer=result.get(CUSTOMERS_WORKSHEET_NAME);
 		
 		assertThat(actualParsedCustomer).isNotEmpty();
+		assertThat(actualParsedCustomer).hasSize(1);
 		assertThat(actualParsedCustomer.get(0)).isInstanceOf(Customer.class);
 	}
 	
@@ -120,7 +121,7 @@ public class ExcelReaderTest {
 		
 		assertCustomerAttributes(customer);
 	}
-
+	
 	
 	@Test
 	public void shouldParseCorrectlyWhenSeveralWorksheets() throws Exception{
@@ -150,6 +151,27 @@ public class ExcelReaderTest {
 		assertThat(address.getNumber()).isEqualTo(42);
 		assertThat(address.getStreet()).isEqualTo("expectedStreet");
 		assertThat(address.getCountry()).isEqualTo("expectedCountry");
+	}
+
+	@Test
+	public void shouldMergeWorksheetsContent() throws Exception{
+
+		
+		config.add(new WorksheetConfig(CUSTOMERS_WORKSHEET_NAME,Customer.class));
+		config.add(new WorksheetConfig(ADDRESSES_WORKSHEET_NAME,Address.class));
+		
+		excelReader.setWorsheetConfigs(config);		
+		
+		excelReader.init();
+				
+		
+		excelReader.readWorksheets();
+		
+		List<Object> mergedResult=excelReader.mergeWorksheets();
+		assertThat(mergedResult).hasSize(1);
+		assertCustomerAttributes((Customer)mergedResult.get(0));
+		
+		
 	}
 	
 

@@ -17,6 +17,17 @@ public class Customer {
 	@ExcelColumn(column=3, valueParser=ExcelCellDataParser.INT)
 	int age;
 	
+	Address address;
+	
+	
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
 	public Long getId() {
 		return id;
 	}
