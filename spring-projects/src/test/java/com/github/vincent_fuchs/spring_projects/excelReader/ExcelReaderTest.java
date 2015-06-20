@@ -118,11 +118,9 @@ public class ExcelReaderTest {
 		
 		Customer customer = (Customer)actualParsedCustomer.get(0);
 		
-		assertThat(customer.getId()).isEqualTo(1);
-		assertThat(customer.getFirstName()).isEqualTo("Vincent");
-		assertThat(customer.getLastName()).isEqualTo("FUCHS");
-		assertThat(customer.getAge()).isEqualTo(33);
+		assertCustomerAttributes(customer);
 	}
+
 	
 	@Test
 	public void shouldParseCorrectlyWhenSeveralWorksheets() throws Exception{
@@ -142,10 +140,7 @@ public class ExcelReaderTest {
 		
 		Customer customer = (Customer)actualParsedCustomer.get(0);
 		
-		assertThat(customer.getId()).isEqualTo(1);
-		assertThat(customer.getFirstName()).isEqualTo("Vincent");
-		assertThat(customer.getLastName()).isEqualTo("FUCHS");
-		assertThat(customer.getAge()).isEqualTo(33);
+		assertCustomerAttributes(customer);
 		
 		List<Object> actualParsedAddress=result.get(ADDRESSES_WORKSHEET_NAME);
 		
@@ -155,6 +150,14 @@ public class ExcelReaderTest {
 		assertThat(address.getNumber()).isEqualTo(42);
 		assertThat(address.getStreet()).isEqualTo("expectedStreet");
 		assertThat(address.getCountry()).isEqualTo("expectedCountry");
+	}
+	
+
+	private void assertCustomerAttributes(Customer customer) {
+		assertThat(customer.getId()).isEqualTo(1);
+		assertThat(customer.getFirstName()).isEqualTo("Vincent");
+		assertThat(customer.getLastName()).isEqualTo("FUCHS");
+		assertThat(customer.getAge()).isEqualTo(33);
 	}
 	
 	private List<WorksheetConfig>  buildWorksheetConfigsWithNames(String... worksheetNames) {
