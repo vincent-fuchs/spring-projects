@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.record.aggregates.WorksheetProtectionBlock;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -69,7 +70,7 @@ public class ExcelReader implements ItemReader<Customer> {
 		
 	}
 
-	public Map<String,List<Object>> readWorksheets() throws IOException, ExcelReaderConfigException, EncryptedDocumentException, InvalidFormatException {
+	public Map<String,List<Object>> readWorksheets() throws IOException, ExcelReaderConfigException, EncryptedDocumentException, InvalidFormatException, InstantiationException, IllegalAccessException {
 		
 		Map<String,List<Object>> parsedResultFromWorksheets=new HashMap<String, List<Object>>();
 		
@@ -79,25 +80,21 @@ public class ExcelReader implements ItemReader<Customer> {
 		
 			Sheet sheet=validateAndReturnSheet(workbook, worksheetConfig);
 
-			List<Object> parsedResult;
-			String worksheetName = worksheetConfig.getName();
-			if(!parsedResultFromWorksheets.containsKey(worksheetName)){
-				parsedResult=new ArrayList<Object>();
-				parsedResultFromWorksheets.put(worksheetName,parsedResult);
-			}
-			else{
-				parsedResult=parsedResultFromWorksheets.get(worksheetName);
-			}
-			
+			List<Object> parsedResult= new ArrayList<Object>();
 			for(int i=worksheetConfig.getFirstCellWithDataColumnIndex() ; i<=sheet.getLastRowNum() ; i++){
 			
 				Row rowToParse=sheet.getRow(i);
-				parsedResult.add(rowToParse);
+				
+				Object targetBean=worksheetConfig.getRowClass().newInstance();
+				
+				
+				
+				parsedResult.add(targetBean);
 								
 			}
 			
-			
-			
+			parsedResultFromWorksheets.put(worksheetConfig.getName(), parsedResult);
+				
 			
 		}
 		
@@ -107,14 +104,6 @@ public class ExcelReader implements ItemReader<Customer> {
 		
 		
 	}
-//
-//	private Row findFirstRow(Sheet sheet, WorksheetConfig worksheetConfig) {
-//		
-//		String firstCell=worksheetConfig.getFirstCellWithData();
-//		
-//		
-//		
-//	}
 
 	private Sheet validateAndReturnSheet(Workbook workbook,
 			WorksheetConfig worksheetConfig) {

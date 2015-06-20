@@ -17,13 +17,18 @@ import com.github.vincent_fuchs.spring_projects.domain.Customer;
 
 public class ExcelReaderTest {
 	
+	private static final String CUSTOMERS_WORKSHEET_NAME = "customers";
 	private static final String SIMPLE_INPUT_FILE = "/com/github/vincent_fuchs/spring_projects/excelReader/simpleInputFile.xlsx";
 	ExcelReader excelReader;
+	
+	List<WorksheetConfig> config;
 	
 	@Before
 	public void initTest(){
 		excelReader=new ExcelReader();
 		excelReader.setInputFile(SIMPLE_INPUT_FILE);
+		
+		config=new ArrayList<WorksheetConfig>();
 	}
 	
 	@Test(expected=IllegalStateException.class)
@@ -51,14 +56,14 @@ public class ExcelReaderTest {
 	@Test
 	public void shouldInitOk_ifWorksheetConfigDone() throws IOException {
 					
-		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames("customers"));
+		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames(CUSTOMERS_WORKSHEET_NAME));
 		
 		excelReader.init();		
 	}
 	
 	
 	@Test(expected=ExcelReaderConfigException.class)
-	public void shouldThrowException_ifConfiguredWorksheetDoesntExist() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException{
+	public void shouldThrowException_ifConfiguredWorksheetDoesntExist() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException, InstantiationException, IllegalAccessException{
 						
 		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames("someDummyNonExistingWorksheet"));		
 		
@@ -68,32 +73,37 @@ public class ExcelReaderTest {
 		
 	
 	@Test(expected=ExcelReaderConfigException.class)
-	public void shouldThrowException_ifConfiguredWorksheetHasNoParser() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException{
-					
-		List<WorksheetConfig>  worksheetsConfig=buildWorksheetConfigsWithNames("customers");		
+	public void shouldThrowException_ifConfiguredWorksheetHasNoParser() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException, InstantiationException, IllegalAccessException{
 				
-		excelReader.setWorsheetConfigs(worksheetsConfig);		
+		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames(CUSTOMERS_WORKSHEET_NAME));		
 		
 		excelReader.init();		
 		excelReader.readWorksheets();
 	}
 	
 	@Test
-	public void shouldHaveAnEntryInResultWithSameNameAsWorksheetName() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException{
-
-		List<WorksheetConfig> config=new ArrayList<WorksheetConfig>();
+	public void shouldHaveAnEntryInResultWithSameNameAsWorksheetName() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException, InstantiationException, IllegalAccessException{
+	
+		configureAndInitForSimpleInputFile();	
 		
-		config.add(new WorksheetConfig("customers",Customer.class));
-				
-		excelReader.setWorsheetConfigs(config);		
-		
-		excelReader.init();		
 		Map<String, List<Object>> result=excelReader.readWorksheets();
 		
 		assertThat(result).isNotEmpty();
-		assertThat(result).containsKey("customers");
+		assertThat(result).containsKey(CUSTOMERS_WORKSHEET_NAME);
 	}
+
 	
+	@Test
+	public void shouldHaveResultOfExpectedClassAfterParsing() throws IOException, EncryptedDocumentException, ExcelReaderConfigException, InvalidFormatException, InstantiationException, IllegalAccessException{
+
+		configureAndInitForSimpleInputFile();		
+		Map<String, List<Object>> result=excelReader.readWorksheets();
+		
+		List<Object> actualParsedCustomer=result.get(CUSTOMERS_WORKSHEET_NAME);
+		
+		assertThat(actualParsedCustomer).isNotEmpty();
+		assertThat(actualParsedCustomer.get(0)).isInstanceOf(Customer.class);
+	}
 	
 	
 	
@@ -106,6 +116,14 @@ public class ExcelReaderTest {
 		}
 		
 		return config;
+	}
+	
+	private void configureAndInitForSimpleInputFile() throws IOException {
+		config.add(new WorksheetConfig(CUSTOMERS_WORKSHEET_NAME,Customer.class));
+				
+		excelReader.setWorsheetConfigs(config);		
+		
+		excelReader.init();
 	}
 	
 	
