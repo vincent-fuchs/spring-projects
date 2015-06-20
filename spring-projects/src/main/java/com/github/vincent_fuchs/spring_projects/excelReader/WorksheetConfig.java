@@ -10,4 +10,9 @@ public class WorksheetConfig {
 		
 	}
 
+	public String getName() {
+		
+		return name;
+	}
+
 }

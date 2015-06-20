@@ -6,6 +6,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
@@ -20,6 +26,7 @@ public class ExcelReader implements ItemReader<Customer> {
 	
 	private List<WorksheetConfig> worsheetConfigs=new ArrayList<WorksheetConfig>();
 	
+	private FileInputStream excelFileAsStream;
 
 	public void setWorsheetConfigs(List<WorksheetConfig> worsheetConfigs) {
 		this.worsheetConfigs = worsheetConfigs;
@@ -48,13 +55,34 @@ public class ExcelReader implements ItemReader<Customer> {
 			throw new IllegalStateException("At least one worksheet config is required to read the excel file");
 		}
 				
-		FileInputStream excelFileAsStream = new FileInputStream(fileAsUrl.getFile());
+		excelFileAsStream = new FileInputStream(fileAsUrl.getFile());
 		
 		
 	}
 
 	public void setInputFile(String inputFile) {
 		this.inputFile=inputFile;
+		
+	}
+
+	public void readWorksheets() throws IOException, ExcelReaderConfigException, EncryptedDocumentException, InvalidFormatException {
+		
+		Workbook workbook = WorkbookFactory.create(excelFileAsStream);
+		
+		for(WorksheetConfig worksheetConfig : worsheetConfigs){
+		
+			String configuredSheetName=worksheetConfig.getName();
+			
+			if(workbook.getSheet(configuredSheetName)==null){
+				throw new ExcelReaderConfigException("configured worksheet with name "+configuredSheetName+" not found in input file "+inputFile);
+			}
+			
+		}
+		
+		
+		
+		
+		
 		
 	}
 
