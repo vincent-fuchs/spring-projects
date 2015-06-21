@@ -15,9 +15,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 public abstract class AbstractExcelReader {
 
+	@Value("{customerBatch.inputFileName}")
 	private String inputFile;
 
 	private List<WorksheetConfig> worsheetConfigs = new ArrayList<WorksheetConfig>();

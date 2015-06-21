@@ -7,11 +7,13 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
+import org.springframework.stereotype.Component;
 
 import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Address;
 import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
 import com.github.vincent_fuchs.spring_projects.excelReader.AbstractExcelReader;
 
+@Component
 public class CustomerExcelReader extends AbstractExcelReader implements ItemReader<Customer>{
 
 	public static final String CUSTOMERS_WORKSHEET_NAME = "customers";
@@ -28,9 +30,9 @@ public class CustomerExcelReader extends AbstractExcelReader implements ItemRead
 		
 		List<Object> mergedResult=new ArrayList<Object>();
 		
-		List<Object> parsedCustomers=parsedResultFromWorksheets.get("customers");
+		List<Object> parsedCustomers=parsedResultFromWorksheets.get(CUSTOMERS_WORKSHEET_NAME);
 		
-		List<Object> parsedAddresses=parsedResultFromWorksheets.get("addresses");
+		List<Object> parsedAddresses=parsedResultFromWorksheets.get(ADDRESSES_WORKSHEET_NAME);
 
 		for(Object customerAsObj : parsedCustomers){
 			
