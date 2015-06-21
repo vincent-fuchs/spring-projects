@@ -14,16 +14,10 @@ import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
 import com.github.vincent_fuchs.spring_projects.excelReader.AbstractExcelReader;
 
 @Component
-public class CustomerExcelReader extends AbstractExcelReader implements ItemReader<Customer>{
+public class CustomerExcelReader extends AbstractExcelReader {
 
 	public static final String CUSTOMERS_WORKSHEET_NAME = "customers";
 	public static final String ADDRESSES_WORKSHEET_NAME = "addresses";
-
-	@Override
-	public Customer read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	@Override
 	public List<Object> mergeWorksheets() {
@@ -57,5 +51,6 @@ public class CustomerExcelReader extends AbstractExcelReader implements ItemRead
 		return mergedResult;
 		
 	}
+
 
 }

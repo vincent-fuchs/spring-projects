@@ -14,8 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {CustomerBatchConfiguration.class, 
-								 SpringBatchInfraTestConfiguration.class})
-@PropertySource("customerBatch-test.properties")
+								 TestSpecificConfiguration.class})
 public class CustomerBatchTest {
 
 	@Autowired

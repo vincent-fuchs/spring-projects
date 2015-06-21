@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -15,18 +17,28 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.NonTransientResourceException;
+import org.springframework.batch.item.ParseException;
+import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.beans.factory.annotation.Value;
 
-public abstract class AbstractExcelReader {
+import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
 
-	@Value("{customerBatch.inputFileName}")
+public abstract class AbstractExcelReader implements ItemReader<Customer>{
+
+	@Value("${customerBatch.inputFileName}")
 	private String inputFile;
+	
+	private int readItemCount=0;
 
 	private List<WorksheetConfig> worsheetConfigs = new ArrayList<WorksheetConfig>();
 
 	private FileInputStream excelFileAsStream;
 
 	protected Map<String, List<Object>> parsedResultFromWorksheets;
+	
+	private List<Object> results;
 
 	
 	/**
@@ -36,6 +48,26 @@ public abstract class AbstractExcelReader {
 	 */
 	public abstract List<Object> mergeWorksheets() ;
 	
+
+
+	@Override
+	public Customer read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+		
+		if(results==null){
+			parsedResultFromWorksheets=readWorksheets();
+			results=mergeWorksheets(); 
+		}
+		
+		if(readItemCount<results.size()){
+			
+			Customer customer=(Customer)results.get(readItemCount);
+			readItemCount++;
+			return customer;
+		}
+		
+		return null;		
+	}
+
 	
 	
 	public void setWorsheetConfigs(List<WorksheetConfig> worsheetConfigs) {
@@ -43,6 +75,7 @@ public abstract class AbstractExcelReader {
 	}
 
 
+	@PostConstruct
 	public void init() throws IOException {
 
 		if (StringUtils.isEmpty(inputFile)) {
@@ -70,7 +103,7 @@ public abstract class AbstractExcelReader {
 
 	}
 
-	public Map<String, List<Object>> readWorksheets() throws IOException,
+	protected Map<String, List<Object>> readWorksheets() throws IOException,
 			ExcelReaderConfigException, EncryptedDocumentException,
 			InvalidFormatException, InstantiationException,
 			IllegalAccessException, SecurityException, NoSuchFieldException, IllegalArgumentException {

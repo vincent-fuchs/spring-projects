@@ -32,7 +32,16 @@ public class CustomerBatchConfiguration {
 	
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
+		
+		PropertySourcesPlaceholderConfigurer placeholder=new PropertySourcesPlaceholderConfigurer();
+		
+		placeholder.setIgnoreResourceNotFound(false);
+		placeholder.setIgnoreUnresolvablePlaceholders(false);
+		
+		System.out.println("PLACEHOLDER CONFIG");
+		
+		
+		return placeholder;
 	}
 	
 	@Bean
