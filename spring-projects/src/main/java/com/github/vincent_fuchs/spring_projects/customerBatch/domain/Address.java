@@ -1,4 +1,4 @@
-package com.github.vincent_fuchs.spring_projects.domain;
+package com.github.vincent_fuchs.spring_projects.customerBatch.domain;
 
 import com.github.vincent_fuchs.spring_projects.excelReader.ExcelCellDataParser;
 import com.github.vincent_fuchs.spring_projects.excelReader.ExcelColumn;

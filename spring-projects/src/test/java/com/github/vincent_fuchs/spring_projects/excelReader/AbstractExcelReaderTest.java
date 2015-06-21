@@ -10,13 +10,12 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.vincent_fuchs.spring_projects.domain.Address;
-import com.github.vincent_fuchs.spring_projects.domain.Customer;
+import com.github.vincent_fuchs.spring_projects.customerBatch.CustomerExcelReader;
+import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Address;
+import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
 
 public class AbstractExcelReaderTest {
 	
-	private static final String CUSTOMERS_WORKSHEET_NAME = "customers";
-	private static final String ADDRESSES_WORKSHEET_NAME = "addresses";
 	private static final String SIMPLE_INPUT_FILE = "/com/github/vincent_fuchs/spring_projects/excelReader/simpleInputFile.xlsx";
 	AbstractExcelReader excelReader;
 	
@@ -55,7 +54,7 @@ public class AbstractExcelReaderTest {
 	@Test
 	public void shouldInitOk_ifWorksheetConfigDone() throws IOException {
 					
-		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames(CUSTOMERS_WORKSHEET_NAME));
+		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames(CustomerExcelReader.CUSTOMERS_WORKSHEET_NAME));
 		
 		excelReader.init();		
 	}
@@ -74,7 +73,7 @@ public class AbstractExcelReaderTest {
 	@Test(expected=ExcelReaderConfigException.class)
 	public void shouldThrowException_ifConfiguredWorksheetHasNoParser() throws Exception{
 				
-		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames(CUSTOMERS_WORKSHEET_NAME));		
+		excelReader.setWorsheetConfigs(buildWorksheetConfigsWithNames(CustomerExcelReader.CUSTOMERS_WORKSHEET_NAME));		
 		
 		excelReader.init();		
 		excelReader.readWorksheets();
@@ -88,7 +87,7 @@ public class AbstractExcelReaderTest {
 		Map<String, List<Object>> result=excelReader.readWorksheets();
 		
 		assertThat(result).isNotEmpty();
-		assertThat(result).containsKey(CUSTOMERS_WORKSHEET_NAME);
+		assertThat(result).containsKey(CustomerExcelReader.CUSTOMERS_WORKSHEET_NAME);
 	}
 
 	
@@ -98,7 +97,7 @@ public class AbstractExcelReaderTest {
 		configureAndInitForSimpleInputFile();		
 		Map<String, List<Object>> result=excelReader.readWorksheets();
 		
-		List<Object> actualParsedCustomer=result.get(CUSTOMERS_WORKSHEET_NAME);
+		List<Object> actualParsedCustomer=result.get(CustomerExcelReader.CUSTOMERS_WORKSHEET_NAME);
 		
 		assertThat(actualParsedCustomer).isNotEmpty();
 		assertThat(actualParsedCustomer).hasSize(1);
@@ -112,7 +111,7 @@ public class AbstractExcelReaderTest {
 		configureAndInitForSimpleInputFile();		
 		Map<String, List<Object>> result=excelReader.readWorksheets();
 		
-		List<Object> actualParsedCustomer=result.get(CUSTOMERS_WORKSHEET_NAME);
+		List<Object> actualParsedCustomer=result.get(CustomerExcelReader.CUSTOMERS_WORKSHEET_NAME);
 		
 		Customer customer = (Customer)actualParsedCustomer.get(0);
 		
@@ -123,8 +122,8 @@ public class AbstractExcelReaderTest {
 	@Test
 	public void shouldParseCorrectlyWhenSeveralWorksheets() throws Exception{
 
-		config.add(new WorksheetConfig(CUSTOMERS_WORKSHEET_NAME,Customer.class));
-		config.add(new WorksheetConfig(ADDRESSES_WORKSHEET_NAME,Address.class));
+		config.add(new WorksheetConfig(CustomerExcelReader.CUSTOMERS_WORKSHEET_NAME,Customer.class));
+		config.add(new WorksheetConfig(CustomerExcelReader.ADDRESSES_WORKSHEET_NAME,Address.class));
 		
 		excelReader.setWorsheetConfigs(config);		
 		
@@ -134,13 +133,13 @@ public class AbstractExcelReaderTest {
 		Map<String, List<Object>> result=excelReader.readWorksheets();
 				
 		
-		List<Object> actualParsedCustomer=result.get(CUSTOMERS_WORKSHEET_NAME);
+		List<Object> actualParsedCustomer=result.get(CustomerExcelReader.CUSTOMERS_WORKSHEET_NAME);
 		
 		Customer customer = (Customer)actualParsedCustomer.get(0);
 		
 		assertCustomerAttributes(customer);
 		
-		List<Object> actualParsedAddress=result.get(ADDRESSES_WORKSHEET_NAME);
+		List<Object> actualParsedAddress=result.get(CustomerExcelReader.ADDRESSES_WORKSHEET_NAME);
 		
 		Address address = (Address)actualParsedAddress.get(0);
 		
@@ -154,8 +153,8 @@ public class AbstractExcelReaderTest {
 	public void shouldMergeWorksheetsContent() throws Exception{
 
 		
-		config.add(new WorksheetConfig(CUSTOMERS_WORKSHEET_NAME,Customer.class));
-		config.add(new WorksheetConfig(ADDRESSES_WORKSHEET_NAME,Address.class));
+		config.add(new WorksheetConfig(CustomerExcelReader.CUSTOMERS_WORKSHEET_NAME,Customer.class));
+		config.add(new WorksheetConfig(CustomerExcelReader.ADDRESSES_WORKSHEET_NAME,Address.class));
 		
 		excelReader.setWorsheetConfigs(config);		
 		
@@ -191,7 +190,7 @@ public class AbstractExcelReaderTest {
 	}
 	
 	private void configureAndInitForSimpleInputFile() throws IOException {
-		config.add(new WorksheetConfig(CUSTOMERS_WORKSHEET_NAME,Customer.class));
+		config.add(new WorksheetConfig(CustomerExcelReader.CUSTOMERS_WORKSHEET_NAME,Customer.class));
 				
 		excelReader.setWorsheetConfigs(config);		
 		
