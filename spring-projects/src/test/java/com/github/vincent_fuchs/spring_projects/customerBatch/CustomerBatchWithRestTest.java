@@ -14,25 +14,23 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
 import com.github.vincent_fuchs.spring_projects.customerBatch.targetSystem.DummyCustomerController;
 import com.github.vincent_fuchs.spring_projects.customerBatch.targetSystem.TargetRESTSystem;
 import com.github.vincent_fuchs.spring_projects.customerBatch.ws.RestCustomerWsClient;
-import com.github.vincent_fuchs.spring_projects.customerBatch.ws.SoapCustomerWsClient;
-import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {CustomerBatchConfiguration.class, 
 										   RestCustomerWsClient.class,					   
-											TargetRESTSystem.class,
-											//SoapCustomerWsClient.class,	
+										   TargetRESTSystem.class,
 										   TestSpecificConfiguration.class})
 @WebAppConfiguration
 @IntegrationTest("server.port:8080") 
 public class CustomerBatchWithRestTest {
 
-	@Value("${local.server.port}") 
-    int targetWebServerPort;
+//	@Value("${local.server.port}") 
+//    int targetWebServerPort;
 	
 	@Autowired
 	private JobLauncherTestUtils jobLauncherTestUtils;
@@ -41,7 +39,7 @@ public class CustomerBatchWithRestTest {
 	private DummyCustomerController endpoint ;
 
 	@Test
-	public void targetShouldReceivedExpectedCustomer() throws Exception {
+	public void targetShouldReceiveExpectedCustomer() throws Exception {
 
 		JobExecution jobExecution = jobLauncherTestUtils.launchJob();
 
