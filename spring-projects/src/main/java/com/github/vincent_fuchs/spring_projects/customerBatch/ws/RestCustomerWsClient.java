@@ -4,6 +4,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
 
+
 public class RestCustomerWsClient implements CustomerWsClient {
 
 	@Override

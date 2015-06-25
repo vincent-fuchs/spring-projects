@@ -14,7 +14,7 @@ import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
 
 
 @RestController
-public class RestCustomerController {
+public class RestCustomerController implements DummyCustomerController {
 
 	public RestCustomerController(){
 		System.out.println("CREATING controller");
@@ -22,7 +22,8 @@ public class RestCustomerController {
 	
     private List<Customer> receivedCustomers=new ArrayList<Customer>();
 
-    public List<Customer> getReceivedCustomers() {
+    @Override
+	public List<Customer> getReceivedCustomers() {
 		return receivedCustomers;
 	}
 
