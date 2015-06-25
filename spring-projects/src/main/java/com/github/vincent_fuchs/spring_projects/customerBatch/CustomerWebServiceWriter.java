@@ -5,12 +5,12 @@ import org.springframework.batch.item.ItemWriter;
 
 import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
 import com.github.vincent_fuchs.spring_projects.customerBatch.ws.CustomerWsClient;
-import com.github.vincent_fuchs.spring_projects.customerBatch.ws.SoapCustomerWsClient;
+import com.github.vincent_fuchs.spring_projects.customerBatch.ws.RestCustomerWsClient;
 
 
 public class CustomerWebServiceWriter implements ItemWriter<Customer> {
 
-	CustomerWsClient wsClient=new SoapCustomerWsClient();
+	CustomerWsClient wsClient=new RestCustomerWsClient();
 	
 	@Override
 	public void write(List<? extends Customer> customersToWrite) throws Exception {
