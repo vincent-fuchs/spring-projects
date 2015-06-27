@@ -13,12 +13,7 @@ public class TestSpecificConfiguration {
 	public JobLauncherTestUtils jobLauncherTestUtils(){
 		return new JobLauncherTestUtils();
 	}	
-	
-//	@Bean
-//	public CustomerEndpoint customerEndpoint(){
-//		return new CustomerEndpoint();
-//	}
-	
+
 	
 	
 }
