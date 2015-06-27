@@ -2,6 +2,8 @@ package com.github.vincent_fuchs.spring_projects.customerBatch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.reflect.Field;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,8 +31,8 @@ import com.github.vincent_fuchs.spring_projects.customerBatch.ws.RestCustomerWsC
 										   TestSpecificConfiguration.class,
 										   CustomerBatchConfiguration.class}
 								)
-//@WebIntegrationTest(randomPort=true)
-@WebIntegrationTest("server.port:8080")
+@WebIntegrationTest(randomPort=true)
+//@WebIntegrationTest("server.port:8080")
 @IntegrationTest({"spring.batch.job.enabled=false"})
 public class CustomerBatchWithRestTest {
 
@@ -52,11 +54,14 @@ public class CustomerBatchWithRestTest {
 
 	
 	@Before
-	public void loadDynamicProperty() {
-
-	    EnvironmentTestUtils.addEnvironment(appCtx, "target.port:"+targetWebServerPort);
-	
-	    assertThat(env.getProperty("target.port")).isEqualTo(String.valueOf(targetWebServerPort)).as("port for target server is not register correctly in properties");
+	public void setDynamicTargetPortOnRestClient() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+    
+		//using reflection to bypass security and set the private field's value - workaround, but no other solution for now.  
+	    RestCustomerWsClient restCustomerWsClient=(RestCustomerWsClient)appCtx.getBean(RestCustomerWsClient.class);
+	    Field f = RestCustomerWsClient.class.getDeclaredField("targetPort");
+        f.setAccessible(true);
+        f.set(restCustomerWsClient,String.valueOf(targetWebServerPort));
+	    
 	}
 	
 	
