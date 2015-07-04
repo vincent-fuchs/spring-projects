@@ -1,34 +1,46 @@
 package com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap;
 
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
+import java.net.MalformedURLException;
 
-import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
 import com.github.vincent_fuchs.spring_projects.customerBatch.ws.CustomerWsClient;
-import com.github.vincent_fuchs.spring_projects.customerws.domain.Integrate;
+import com.github.vincent_fuchs.spring_projects.customerws.domain.Customer;
+import com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.WebServiceExecutorImpl;
 
-public class SoapCustomerWsClient extends WebServiceGatewaySupport implements CustomerWsClient  {
+public class SoapCustomerWsClient implements CustomerWsClient  {
 
-	@Override
-	public void sendCustomer(Customer customerFromExcel){
-		
-		Jaxb2Marshaller marshaller=new Jaxb2Marshaller();
-		marshaller.setSchema(new ClassPathResource("classpath:xsd/customer.xsd"));
-		marshaller.setClassesToBeBound(com.github.vincent_fuchs.spring_projects.customerws.domain.Customer.class);
+	private SoapWsClient<SoapWebService,Customer> soapWsClient;
+	
+	public SoapCustomerWsClient(){
+			
+		soapWsClient=new SoapWsClient<SoapWebService,Customer>(SoapWebService.class);
+		soapWsClient.setNamespace("http://soap.ws.customerBatch.spring_projects.vincent_fuchs.github.com/");
+		soapWsClient.setWsdlUrlString("http://localhost:8080/soapWebService?wsdl");
+		soapWsClient.setServicePart("SoapWebServiceImplService");
+		soapWsClient.setPortPart("SoapWebServiceImplPort");
 				
-		setDefaultUri("http://localhost:8080/");
-		setMarshaller(marshaller);
+		soapWsClient.setWebServiceExecutor(new WebServiceExecutorImpl());
+			
+	}
+	
+	
+	@Override
+	public void sendCustomer(com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer customerFromExcel) {
+			
+		try {
 		
-		com.github.vincent_fuchs.spring_projects.customerws.domain.Customer customerforWs=new com.github.vincent_fuchs.spring_projects.customerws.domain.Customer();
+			Customer webServiceCustomer = new Customer();
+			webServiceCustomer.setAge(customerFromExcel.getAge());
+			webServiceCustomer.setLastname(customerFromExcel.getLastName());
+			webServiceCustomer.setFirstname(customerFromExcel.getFirstName());
+			
+			
+			soapWsClient.execute(webServiceCustomer);
+					
+		} catch (MalformedURLException e) {
+			System.out.println("issue while sending customer through SOAP call "+e.toString());
+		}
 		
-		customerforWs.setLastname(customerFromExcel.getLastName());
-		customerforWs.setFirstname(customerFromExcel.getFirstName());
 		
-		Integrate request=new Integrate();
-		request.setCustomer(customerforWs);
-		
-		getWebServiceTemplate().marshalSendAndReceive(request);
 	
 	}
 	

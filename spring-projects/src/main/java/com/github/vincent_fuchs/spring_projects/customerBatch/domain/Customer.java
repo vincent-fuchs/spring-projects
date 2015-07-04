@@ -44,4 +44,16 @@ public class Customer {
 		return age;
 	}
 	
+	
+	public static Customer toBatchDomainCustomer(com.github.vincent_fuchs.spring_projects.customerws.domain.Customer webServiceCustomer){
+		
+		Customer newCustomer=new Customer();
+		
+		newCustomer.firstName=webServiceCustomer.getFirstname();
+		newCustomer.lastName=webServiceCustomer.getLastname();
+		newCustomer.age=webServiceCustomer.getAge();
+				
+		return newCustomer;
+	}
+	
 }
