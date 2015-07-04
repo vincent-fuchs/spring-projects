@@ -2,6 +2,8 @@ package com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.impl;
 
 import java.net.MalformedURLException;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import com.github.vincent_fuchs.spring_projects.customerBatch.ws.CustomerWsClient;
 import com.github.vincent_fuchs.spring_projects.customerws.domain.Customer;
 import com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.SoapWebService;
@@ -9,15 +11,30 @@ import com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.WebService
 
 public class SoapCustomerWsClient implements CustomerWsClient  {
 
+	@Value("${target.namespace}")
+	private String targetNameSpace;
+	
+	@Value("${target.wsdlUrl}")
+	private String wsdlUrl;
+	
+	@Value("${target.service}")
+	private String targetService;
+		
+	@Value("${target.port}")
+	private String targetPort;
+	
+	
 	private GenericSoapWsClient<SoapWebService,Customer> soapWsClient;
 	
 	public SoapCustomerWsClient(){
 			
+		System.out.println("wsdlUrlString : "+wsdlUrl);
+		
 		soapWsClient=new GenericSoapWsClient<SoapWebService,Customer>(SoapWebService.class);
-		soapWsClient.setNamespace("http://soap.ws.customerBatch.spring_projects.vincent_fuchs.github.com/");
-		soapWsClient.setWsdlUrlString("http://localhost:8080/soapWebService?wsdl");
-		soapWsClient.setServicePart("SoapWebServiceImplService");
-		soapWsClient.setPortPart("SoapWebServiceImplPort");
+		soapWsClient.setNamespace(targetNameSpace);
+		soapWsClient.setWsdlUrlString(wsdlUrl);
+		soapWsClient.setServicePart(targetService);
+		soapWsClient.setPortPart(targetPort);
 				
 		soapWsClient.setWebServiceExecutor(new WebServiceExecutorImpl());
 			
@@ -39,10 +56,31 @@ public class SoapCustomerWsClient implements CustomerWsClient  {
 					
 		} catch (MalformedURLException e) {
 			System.out.println("issue while sending customer through SOAP call "+e.toString());
+			e.printStackTrace();
 		}
 		
 		
 	
+	}
+
+
+	public void setTargetNameSpace(String targetNameSpace) {
+		this.targetNameSpace = targetNameSpace;
+	}
+
+
+	public void setWsdlUrl(String wsdlUrl) {
+		this.wsdlUrl = wsdlUrl;
+	}
+
+
+	public void setTargetService(String targetService) {
+		this.targetService = targetService;
+	}
+
+
+	public void setTargetPort(String targetPort) {
+		this.targetPort = targetPort;
 	}
 	
 	

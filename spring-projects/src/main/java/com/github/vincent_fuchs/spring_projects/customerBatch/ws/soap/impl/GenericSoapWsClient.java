@@ -27,6 +27,9 @@ public class GenericSoapWsClient<S, O> {
 	}
 	
 	public O execute(Object...objects) throws MalformedURLException {
+		
+		System.out.println("wsdlUrlString : "+wsdlUrlString);
+		
 		URL wsdlUrl = new URL(wsdlUrlString);
 	    QName serviceQName = new QName(namespace, servicePart);
 	    QName portQName = new QName(namespace, portPart);
