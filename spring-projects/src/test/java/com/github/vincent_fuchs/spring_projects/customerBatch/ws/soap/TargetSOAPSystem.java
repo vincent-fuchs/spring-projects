@@ -1,4 +1,4 @@
-package com.github.vincent_fuchs.spring_projects.customerBatch.targetSystem;
+package com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

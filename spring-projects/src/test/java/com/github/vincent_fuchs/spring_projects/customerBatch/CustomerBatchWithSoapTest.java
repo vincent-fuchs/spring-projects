@@ -34,7 +34,7 @@ import com.github.vincent_fuchs.spring_projects.customerBatch.ws.rest.TargetREST
 @WebIntegrationTest(randomPort=true)
 //@WebIntegrationTest("server.port:8080")
 @IntegrationTest({"spring.batch.job.enabled=false"})
-public class CustomerBatchWithRestTest {
+public class CustomerBatchWithSoapTest {
 
 	@Value("${local.server.port}") 
     public int targetWebServerPort;

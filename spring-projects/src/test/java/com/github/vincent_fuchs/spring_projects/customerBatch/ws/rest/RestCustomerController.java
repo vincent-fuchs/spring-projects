@@ -1,4 +1,4 @@
-package com.github.vincent_fuchs.spring_projects.customerBatch.targetSystem;
+package com.github.vincent_fuchs.spring_projects.customerBatch.ws.rest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
+import com.github.vincent_fuchs.spring_projects.customerBatch.targetSystem.DummyCustomerController;
 
 
 @RestController
