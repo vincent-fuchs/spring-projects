@@ -1,4 +1,4 @@
-package com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap;
+package com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.impl;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -6,7 +6,9 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
-public class SoapWsClient<S, O> {
+import com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.WebServiceExecutor;
+
+public class GenericSoapWsClient<S, O> {
 	
 	private WebServiceExecutor<S, O> webServiceExecutor;
 	
@@ -20,7 +22,7 @@ public class SoapWsClient<S, O> {
 	
 	private String portPart;
 	
-	public SoapWsClient(Class<S> serviceClass) {
+	public GenericSoapWsClient(Class<S> serviceClass) {
 		this.serviceClass=serviceClass;
 	}
 	

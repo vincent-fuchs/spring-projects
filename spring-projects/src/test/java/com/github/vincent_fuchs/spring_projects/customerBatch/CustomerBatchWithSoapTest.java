@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
-import com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.SoapCustomerWsClient;
 import com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.SoapWebService;
 import com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.SoapWebServiceImpl;
 import com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.SoapWsServer;
+import com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.impl.SoapCustomerWsClient;
+import com.github.vincent_fuchs.spring_projects.customerws.domain.Customer;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -29,13 +30,11 @@ import com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.SoapWsServ
 										   TestSpecificConfiguration.class,
 										   CustomerBatchConfiguration.class}
 								)
-//@WebIntegrationTest(randomPort=true)
-//@WebIntegrationTest("server.port:8080")
+
 @IntegrationTest({"spring.batch.job.enabled=false"})
 public class CustomerBatchWithSoapTest {
 
-//	@Value("${local.server.port}") 
-//    public int targetWebServerPort;
+	public int targetWebServerPort=8080;
 	
 		
 	@Autowired
@@ -59,7 +58,7 @@ public class CustomerBatchWithSoapTest {
 		
 		endpoint= new SoapWebServiceImpl();
 		
-		soapWsServer=new SoapWsServer<SoapWebService>("http://localhost:8080/soapWebService", endpoint);
+		soapWsServer=new SoapWsServer<SoapWebService>("http://localhost:"+targetWebServerPort+"/soapWebService", endpoint);
 		soapWsServer.start();
 			
 	}
@@ -69,8 +68,6 @@ public class CustomerBatchWithSoapTest {
 		soapWsServer.stop();
 	}
 	
-
-	
 	
 	@Test
 	public void targetShouldReceiveExpectedCustomer() throws Exception {
@@ -78,13 +75,13 @@ public class CustomerBatchWithSoapTest {
 		
 		JobExecution jobExecution = jobLauncherTestUtils.launchJob();
 
-		//assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
+		assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
 		assertThat(endpoint.getReceivedCustomers()).hasSize(1);
 		
 		Customer actualCustomer=endpoint.getReceivedCustomers().get(0);
-	//	assertThat(actualCustomer.getId()).isEqualTo(1);
-		assertThat(actualCustomer.getFirstName()).isEqualTo("Vincent");
-		assertThat(actualCustomer.getLastName()).isEqualTo("FUCHS");
+	
+		assertThat(actualCustomer.getFirstname()).isEqualTo("Vincent");
+		assertThat(actualCustomer.getLastname()).isEqualTo("FUCHS");
 	}
 
 }

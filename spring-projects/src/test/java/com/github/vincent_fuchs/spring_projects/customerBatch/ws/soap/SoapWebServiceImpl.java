@@ -10,24 +10,21 @@ import com.github.vincent_fuchs.spring_projects.customerws.domain.Customer;
 
 
 @WebService(endpointInterface = "com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap.SoapWebService")
-public class SoapWebServiceImpl implements SoapWebService,DummyCustomerController {
+public class SoapWebServiceImpl implements SoapWebService {
 
-	List<com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer> receivedCustomers=new ArrayList<com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer>();
+	List<Customer> receivedCustomers=new ArrayList<Customer>();
 	
 
 	@Override
 	public Customer getMessage(Customer customer) {
 		System.out.println("message = " + customer);
 	
-		receivedCustomers.add(com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer.toBatchDomainCustomer(customer));
+		receivedCustomers.add(customer);
 		
 		return customer;
 	}
 	
-	
-
-	@Override
-	public List<com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer> getReceivedCustomers() {
+	public List<Customer> getReceivedCustomers() {
 		return receivedCustomers;
 	}
 
