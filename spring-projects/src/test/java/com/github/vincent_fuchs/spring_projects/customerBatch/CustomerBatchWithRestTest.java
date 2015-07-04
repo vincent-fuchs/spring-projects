@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
 import com.github.vincent_fuchs.spring_projects.customerBatch.targetSystem.DummyCustomerController;
 import com.github.vincent_fuchs.spring_projects.customerBatch.targetSystem.TargetRESTSystem;
-import com.github.vincent_fuchs.spring_projects.customerBatch.ws.RestCustomerWsClient;
+import com.github.vincent_fuchs.spring_projects.customerBatch.ws.rest.RestCustomerWsClient;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

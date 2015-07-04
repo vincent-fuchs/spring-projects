@@ -1,10 +1,11 @@
-package com.github.vincent_fuchs.spring_projects.customerBatch.ws;
+package com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 
 import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
+import com.github.vincent_fuchs.spring_projects.customerBatch.ws.CustomerWsClient;
 import com.github.vincent_fuchs.spring_projects.customerws.domain.Integrate;
 
 public class SoapCustomerWsClient extends WebServiceGatewaySupport implements CustomerWsClient  {

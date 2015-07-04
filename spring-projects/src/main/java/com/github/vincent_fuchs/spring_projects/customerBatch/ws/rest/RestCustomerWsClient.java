@@ -1,9 +1,10 @@
-package com.github.vincent_fuchs.spring_projects.customerBatch.ws;
+package com.github.vincent_fuchs.spring_projects.customerBatch.ws.rest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
 import com.github.vincent_fuchs.spring_projects.customerBatch.domain.Customer;
+import com.github.vincent_fuchs.spring_projects.customerBatch.ws.CustomerWsClient;
 
 
 public class RestCustomerWsClient implements CustomerWsClient {

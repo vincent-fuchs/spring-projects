@@ -1,4 +1,4 @@
-package com.github.vincent_fuchs.spring_projects.customerBatch.ws;
+package com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap;
 
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;

@@ -1,4 +1,4 @@
-package com.github.vincent_fuchs.spring_projects.customerBatch.ws;
+package com.github.vincent_fuchs.spring_projects.customerBatch.ws.soap;
 
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
